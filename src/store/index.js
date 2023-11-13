@@ -4,11 +4,18 @@ export default createStore({
   state: {
     notes: [],
   },
+
   getters: {},
 
-  mutations: {},
+  mutations: {
+    setNotes(state, data) {
+      state.notes.push(data);
+    },
+  },
 
-  actions: {},
-
-  modules: {},
+  actions: {
+    addNote({ commit }, data) {
+      commit("setNotes", data);
+    },
+  },
 });

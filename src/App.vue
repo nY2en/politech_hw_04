@@ -14,7 +14,6 @@ export default {};
 }
 
 body {
-  padding: 40px;
   font-family: sans-serif;
 }
 
