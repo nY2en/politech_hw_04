@@ -9,7 +9,7 @@ export default createStore({
 
   mutations: {
     setNotes(state, data) {
-      state.notes.push(data);
+      state.notes = data;
     },
   },
 

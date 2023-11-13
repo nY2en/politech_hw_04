@@ -1,22 +1,42 @@
 <template>
-  <div class="area">
-    <NoteCard v-for="note in notes" :key="note.id" :note="note" />
-
+  <div
+    class="area"
+    @mousedown="handleMouseDown"
+    @mouseup="handleMouseUp"
+    @mousemove="handleMouseMove"
+  >
+    <NoteCard
+      v-for="(note, index) in notes"
+      :key="note.id"
+      :note="note"
+      :idx="index"
+    />
     <button class="btn" @click="addNote">Add note</button>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
 import NoteCard from "@/components/NoteCard.vue";
 
 export default {
-  components: { NoteCard },
+  data() {
+    return {
+      notes: [],
+      currentNoteIdx: null,
+      isAction: false,
+      startCoords: {
+        x: 0,
+        y: 0,
+      },
+      currentCoords: {
+        x: 0,
+        y: 0,
+      },
+    };
+  },
 
-  computed: {
-    ...mapState({
-      notes: "notes",
-    }),
+  mounted() {
+    this.notes = this.$store.state.notes;
   },
 
   methods: {
@@ -27,17 +47,71 @@ export default {
           x: 0,
           y: 0,
         },
+        text: "",
       };
 
-      this.$store.dispatch("addNote", newNote);
+      this.notes.push(newNote);
+      this.$store.dispatch("addNote", this.notes);
+    },
+
+    handleMouseDown(e) {
+      if (e.target.classList.contains("hud")) {
+        this.isAction = true;
+        this.currentNoteIdx = e.target.parentNode.getAttribute("idx");
+        this.startCoords.x = e.pageX;
+        this.startCoords.y = e.pageY;
+      }
+    },
+
+    handleMouseMove(e) {
+      if (this.isAction) {
+        this.currentCoords.x =
+          this.notes[this.currentNoteIdx].coords.x +
+          (e.pageX - this.startCoords.x);
+
+        this.currentCoords.y =
+          this.notes[this.currentNoteIdx].coords.y +
+          (e.pageY - this.startCoords.y);
+
+        const areaWidth = document.querySelector(".area").offsetWidth;
+        const areaHeight = document.querySelector(".area").offsetHeight;
+        const noteWidth = document.querySelector(".note").offsetWidth;
+        const notHeight = document.querySelector(".note").offsetHeight;
+
+        if (this.currentCoords.x <= 0) this.currentCoords.x = 0;
+        if (this.currentCoords.x >= areaWidth - noteWidth)
+          this.currentCoords.x = areaWidth - noteWidth;
+
+        if (this.currentCoords.y <= 0) this.currentCoords.y = 0;
+        if (this.currentCoords.y >= areaHeight - notHeight)
+          this.currentCoords.y = areaHeight - notHeight;
+
+        document.querySelector(
+          `.note[idx="${this.currentNoteIdx}"]`
+        ).style.left = `${this.currentCoords.x}px`;
+
+        document.querySelector(
+          `.note[idx="${this.currentNoteIdx}"]`
+        ).style.top = `${this.currentCoords.y}px`;
+      }
+    },
+
+    handleMouseUp() {
+      if (this.isAction) {
+        this.isAction = false;
+        this.notes[this.currentNoteIdx].coords.x = this.currentCoords.x;
+        this.notes[this.currentNoteIdx].coords.y = this.currentCoords.y;
+      }
     },
   },
+
+  components: { NoteCard },
 };
 </script>
 
 <style>
 .area {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   overflow: hidden;
 

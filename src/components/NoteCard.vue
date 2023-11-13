@@ -1,7 +1,7 @@
 <template>
   <div class="note">
     <div class="hud"></div>
-    <textarea class="textarea"></textarea>
+    <textarea class="textarea" @input="handleTextareaChange"></textarea>
   </div>
 </template>
 
@@ -13,14 +13,20 @@ export default {
       required: true,
     },
   },
+
+  methods: {
+    handleTextareaChange(e) {
+      console.log(e.target.value);
+    },
+  },
 };
 </script>
 
 <style>
 .note {
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 0;
+  left: 0;
 
   width: 350px;
   height: 150px;
