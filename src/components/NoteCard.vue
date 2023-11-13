@@ -5,6 +5,7 @@
       class="textarea"
       :value="note.text"
       @input="(e) => $emit('handleText', e.target.value)"
+      placeholder="Type sth..."
     ></textarea>
   </div>
 </template>

@@ -116,8 +116,8 @@ export default {
 
   watch: {
     notes: {
-      handler(newV) {
-        this.$store.dispatch("updateNote", newV);
+      handler(newValue) {
+        this.$store.dispatch("updateNote", newValue);
       },
       deep: true,
     },
