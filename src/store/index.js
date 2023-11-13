@@ -17,5 +17,9 @@ export default createStore({
     addNote({ commit }, data) {
       commit("setNotes", data);
     },
+
+    updateNote({ commit }, data) {
+      commit("setNotes", data);
+    },
   },
 });

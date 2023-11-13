@@ -1,7 +1,11 @@
 <template>
   <div class="note">
     <div class="hud"></div>
-    <textarea class="textarea" @input="handleTextareaChange"></textarea>
+    <textarea
+      class="textarea"
+      :value="note.text"
+      @input="(e) => $emit('handleText', e.target.value)"
+    ></textarea>
   </div>
 </template>
 
@@ -11,12 +15,6 @@ export default {
     note: {
       type: Object,
       required: true,
-    },
-  },
-
-  methods: {
-    handleTextareaChange(e) {
-      console.log(e.target.value);
     },
   },
 };

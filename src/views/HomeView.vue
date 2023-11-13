@@ -10,6 +10,7 @@
       :key="note.id"
       :note="note"
       :idx="index"
+      @handleText="handleText"
     />
     <button class="btn" @click="addNote">Add note</button>
   </div>
@@ -61,6 +62,10 @@ export default {
         this.startCoords.x = e.pageX;
         this.startCoords.y = e.pageY;
       }
+
+      if (e.target.classList.contains("textarea")) {
+        this.currentNoteIdx = e.target.parentNode.getAttribute("idx");
+      }
     },
 
     handleMouseMove(e) {
@@ -102,6 +107,19 @@ export default {
         this.notes[this.currentNoteIdx].coords.x = this.currentCoords.x;
         this.notes[this.currentNoteIdx].coords.y = this.currentCoords.y;
       }
+    },
+
+    handleText(data) {
+      this.notes[this.currentNoteIdx].text = data;
+    },
+  },
+
+  watch: {
+    notes: {
+      handler(newV) {
+        this.$store.dispatch("updateNote", newV);
+      },
+      deep: true,
     },
   },
 
