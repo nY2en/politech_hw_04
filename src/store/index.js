@@ -5,10 +5,10 @@ import {
   getDocs,
   collection,
   // getDoc,
-  // doc,
+  doc,
   // deleteDoc,
   // getFirestore,
-  // setDoc
+  setDoc,
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 
@@ -26,23 +26,6 @@ const APP = initializeApp(firebaseConfig);
 
 const DB = getFirestore(APP);
 
-DB;
-
-// function getDocFromDb(c, d) {
-//   return getDoc(doc(DB, c, d));
-// }
-
-// function getCollectionFromDb(c) {
-//   return getDocs(collection(DB, c));
-// }
-
-// getDocFromDb("Notes", "jjKkSbvtpNBlOK3uSEYA").then((res) =>
-//   console.error(res.data())
-// );
-
-// getCollectionFromDb("Notes").then((res) =>
-//   res.forEach((el) => console.log(el.data()))
-// );
 
 export default createStore({
   state: {
@@ -53,27 +36,32 @@ export default createStore({
 
   mutations: {
     setNotes(state, data) {
-      state.notes = data;
+      state.notes.push(data);
     },
 
-    setFetchedNotes(state, data) {
-      state.notes.push(data);
+    updateNote(state, data) {
+      const { idx, updNote } = data;
+      state.notes[idx] = updNote;
     },
   },
 
   actions: {
     fetchNotes({ commit }) {
       getDocs(collection(DB, "Notes")).then((res) =>
-        res.forEach((el) => commit("setFetchedNotes", el.data()))
+        res.forEach((el) => commit("setNotes", el.data()))
       );
     },
 
     addNote({ commit }, data) {
+      setDoc(doc(DB, "Notes", `${data.id}`), { ...data });
       commit("setNotes", data);
     },
 
-    updateNote({ commit }, data) {
-      commit("setNotes", data);
+    updateNote({ commit, state }, data) {
+      if (state.notes[data.idx]) {
+        setDoc(doc(DB, "Notes", `${data.updNote.id}`), { ...data.updNote });
+        commit("updateNote", data);
+      }
     },
   },
 });

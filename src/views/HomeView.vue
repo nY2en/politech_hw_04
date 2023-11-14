@@ -22,7 +22,6 @@ import NoteCard from "@/components/NoteCard.vue";
 export default {
   data() {
     return {
-      notes: [],
       currentNoteIdx: null,
       isAction: false,
       startCoords: {
@@ -38,8 +37,12 @@ export default {
 
   mounted() {
     this.$store.dispatch("fetchNotes");
+  },
 
-    this.notes = this.$store.state.notes;
+  computed: {
+    notes() {
+      return this.$store.state.notes;
+    },
   },
 
   methods: {
@@ -53,8 +56,7 @@ export default {
         text: "",
       };
 
-      this.notes.push(newNote);
-      this.$store.dispatch("addNote", this.notes);
+      this.$store.dispatch("addNote", newNote);
     },
 
     handleMouseDown(e) {
@@ -119,7 +121,9 @@ export default {
   watch: {
     notes: {
       handler(newValue) {
-        this.$store.dispatch("updateNote", newValue);
+        const updNote = newValue[this.currentNoteIdx];
+        const idx = this.currentNoteIdx;
+        this.$store.dispatch("updateNote", { updNote, idx });
       },
       deep: true,
     },
