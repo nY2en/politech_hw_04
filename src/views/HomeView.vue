@@ -121,9 +121,9 @@ export default {
   watch: {
     notes: {
       handler(newValue) {
-        const updNote = newValue[this.currentNoteIdx];
+        const noteToUpdate = newValue[this.currentNoteIdx];
         const idx = this.currentNoteIdx;
-        this.$store.dispatch("updateNote", { updNote, idx });
+        this.$store.dispatch("updateNote", { noteToUpdate, idx });
       },
       deep: true,
     },

@@ -38,8 +38,8 @@ export default createStore({
     },
 
     updateNote(state, data) {
-      const { idx, updNote } = data;
-      state.notes[idx] = updNote;
+      const { idx, noteToUpdate } = data;
+      state.notes[idx] = noteToUpdate;
     },
 
     deleteNote(state, data) {
@@ -62,7 +62,9 @@ export default createStore({
 
     updateNote({ commit, state }, data) {
       if (state.notes[data.idx]) {
-        setDoc(doc(DB, "Notes", `${data.updNote.id}`), { ...data.updNote });
+        setDoc(doc(DB, "Notes", `${data.noteToUpdate.id}`), {
+          ...data.noteToUpdate,
+        });
         commit("updateNote", data);
       }
     },
