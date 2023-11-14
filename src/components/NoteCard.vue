@@ -3,11 +3,13 @@
     class="note"
     :style="{ top: note.coords.y + 'px', left: note.coords.x + 'px' }"
   >
-    <div class="hud"></div>
+    <div class="hud">
+      <button class="btn" @click="deleteNote(note)">X</button>
+    </div>
     <textarea
       class="textarea"
       :value="note.text"
-      @input="(e) => $emit('handleText', e.target.value)"
+      @input="handleChange"
       placeholder="Type sth..."
     ></textarea>
   </div>
@@ -21,10 +23,21 @@ export default {
       required: true,
     },
   },
+
+  methods: {
+    handleChange(e) {
+      this.$emit("handleText", e.target.value);
+    },
+
+    deleteNote(data) {
+      console.log(data);
+      this.$store.dispatch("deleteNote", data);
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
 .note {
   position: absolute;
   top: 0;
@@ -43,10 +56,15 @@ export default {
 .hud {
   width: 100%;
   height: 30px;
+  padding: 0 8px;
 
   cursor: pointer;
 
   background-color: #fa8072;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .textarea {
@@ -62,5 +80,17 @@ export default {
   border: none;
   background-color: transparent;
   color: #000;
+}
+
+.btn {
+  background-color: skyblue;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 15px;
+
+  font-size: 11px;
+
+  cursor: pointer;
 }
 </style>

@@ -6,11 +6,10 @@ import {
   collection,
   // getDoc,
   doc,
-  // deleteDoc,
-  // getFirestore,
+  deleteDoc,
+  getFirestore,
   setDoc,
 } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyABgWLVznaisP8g3bnsM9Xb5h31nam8eCs",
@@ -25,7 +24,6 @@ const firebaseConfig = {
 const APP = initializeApp(firebaseConfig);
 
 const DB = getFirestore(APP);
-
 
 export default createStore({
   state: {
@@ -42,6 +40,11 @@ export default createStore({
     updateNote(state, data) {
       const { idx, updNote } = data;
       state.notes[idx] = updNote;
+    },
+
+    deleteNote(state, data) {
+      const idx = state.notes.findIndex((el) => el.id === data.id);
+      state.notes.splice(idx, 1);
     },
   },
 
@@ -62,6 +65,11 @@ export default createStore({
         setDoc(doc(DB, "Notes", `${data.updNote.id}`), { ...data.updNote });
         commit("updateNote", data);
       }
+    },
+
+    deleteNote({ commit }, data) {
+      deleteDoc(doc(DB, "Notes", `${data.id}`));
+      commit("deleteNote", data);
     },
   },
 });
