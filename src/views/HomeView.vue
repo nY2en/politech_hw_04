@@ -37,6 +37,8 @@ export default {
   },
 
   mounted() {
+    this.$store.dispatch("fetchNotes");
+
     this.notes = this.$store.state.notes;
   },
 

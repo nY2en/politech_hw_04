@@ -1,5 +1,8 @@
 <template>
-  <div class="note">
+  <div
+    class="note"
+    :style="{ top: note.coords.y + 'px', left: note.coords.x + 'px' }"
+  >
     <div class="hud"></div>
     <textarea
       class="textarea"
