@@ -5,12 +5,26 @@
     @mouseup="handleMouseUp"
     @mousemove="handleMouseMove"
   >
+    <form>
+      <ul>
+        <li v-for="categorie in categories" :key="categorie.id">
+          <input
+            type="checkbox"
+            :id="categorie.id"
+            :value="categorie.id"
+            @change="handleCategoriesChange"
+            :name="categorie.type"
+          />
+          <label :for="categorie.id">{{ categorie.type }}</label>
+        </li>
+      </ul>
+    </form>
+
     <NoteCard
       v-for="(note, index) in notes"
       :key="note.id"
       :note="note"
       :idx="index"
-      @handleText="handleText"
     />
     <button class="btn" @click="addNote">Add note</button>
   </div>
@@ -37,11 +51,16 @@ export default {
 
   mounted() {
     this.$store.dispatch("fetchNotes");
+    this.$store.dispatch("fetchCategories");
   },
 
   computed: {
     notes() {
-      return this.$store.state.notes;
+      return this.$store.getters.filteredNotes;
+    },
+
+    categories() {
+      return this.$store.state.categories;
     },
   },
 
@@ -54,6 +73,7 @@ export default {
           y: 0,
         },
         text: "",
+        categorie: 1,
       };
 
       this.$store.dispatch("addNote", newNote);
@@ -110,22 +130,15 @@ export default {
         this.isAction = false;
         this.notes[this.currentNoteIdx].coords.x = this.currentCoords.x;
         this.notes[this.currentNoteIdx].coords.y = this.currentCoords.y;
+
+        this.$store.dispatch("updateNote", this.notes[this.currentNoteIdx]);
       }
     },
 
-    handleText(data) {
-      this.notes[this.currentNoteIdx].text = data;
-    },
-  },
-
-  watch: {
-    notes: {
-      handler(newValue) {
-        const noteToUpdate = newValue[this.currentNoteIdx];
-        const idx = this.currentNoteIdx;
-        this.$store.dispatch("updateNote", { noteToUpdate, idx });
-      },
-      deep: true,
+    handleCategoriesChange(e) {
+      if (e.target.checked) {
+        this.$store.dispatch("checkCategorie", e.target.value);
+      } else this.$store.dispatch("unCheckCategorie", e.target.value);
     },
   },
 
