@@ -49,7 +49,7 @@ export default {
     };
   },
 
-  mounted() {
+  created() {
     this.$store.dispatch("fetchNotes");
     this.$store.dispatch("fetchCategories");
   },
