@@ -33,7 +33,7 @@ export default createStore({
 
   getters: {
     filteredNotes(state) {
-      return [...state.notes].filter((el) => {
+      return state.notes.filter((el) => {
         if (state.checkedCategories.length > 0) {
           return state.checkedCategories.includes(String(el.categorie));
         }
